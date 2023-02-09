@@ -1,0 +1,67 @@
+name: mizar CI
+
+on: 
+  push:
+    branches:
+      - '**'        # matches every branch
+      - '!master'   # excludes master
+
+jobs:
+  variables:
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.vars.outputs.branch }} # map step output to job output
+      sha_short: ${{ steps.vars.outputs.sha_short }} # map step output to job output
+    steps:
+      - uses: actions/checkout@v2
+      - name: Declare some variables
+        id: vars
+        shell: bash
+        run: |
+          echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+  build:
+    runs-on: ubuntu-latest
+    needs: variables
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Install and Compile
+        run: |
+          yarn install
+          yarn build
+      - name: unit test
+        run: |
+          yarn test
+  staging-deployment:
+    needs: [variables, build]
+    uses: ./.github/workflows/deployer.yaml
+    with:
+      username: ${{ github.actor }}
+      network: "bscTestnet"
+    secrets:
+      TESTNET_MNEMONIC: ${{ secrets.TESTNET_MNEMONIC }}
+      VERIFY_API_KEY: ${{ secrets.BSC_TESTNET_API_KEY }}
+  integration-tests:
+    needs: [variables, build, staging-deployment ]
+    uses: ./.github/workflows/integrationTest.yaml
+  # production-deployment:
+  #   needs: integration-tests
+  #   uses: ./.github/workflows/deployer.yaml
+  #   with:
+  #     username: ${{ github.actor }}
+  #     network: "ftmTestnet"
+  #   secrets:
+  #     TESTNET_MNEMONIC: ${{ secrets.TESTNET_MNEMONIC }}      
+  #     VERIFY_API_KEY: ${{ secrets.FTM_TESTNET_API_KEY }}
+   
+
+
+
+#------------------ GOTCHAS ---------------------
+# curtrently there is an issue with reusable workflow from another repository
+# https://github.community/t/ref-head-in-reusable-workflows/203690/42
+# uses: MizarAI/mizar-protocol/.github/workflows/deployer.yaml@${{ needs.variables.outputs.sha_short }}

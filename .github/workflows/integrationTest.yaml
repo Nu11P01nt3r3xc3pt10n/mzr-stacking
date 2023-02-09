@@ -1,0 +1,20 @@
+name: integration
+
+on:
+  workflow_call:
+   
+
+jobs:
+  deploy_job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1     
+      - name: integration tests
+        run: |
+          echo "running integration tests"
+      - name: Create tag
+        run: |
+          echo "feedback mechanism for providing result on integration test"
+          # git tag -a TEST-INTEGRATION-SUCCEEDED -m "test passed"
+          # git push origin TEST-INTEGRATION-SUCCEEDED

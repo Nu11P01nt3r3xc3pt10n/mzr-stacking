@@ -1,0 +1,35 @@
+name: deployer
+
+on:
+  workflow_call:
+    inputs:
+      username:
+        required: true
+        type: string
+      network:
+        required: true
+        type: string          
+    secrets:
+      TESTNET_MNEMONIC:
+        required: true
+      VERIFY_API_KEY:
+        required: true  
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1     
+        with:
+          node-version: 14.x
+          check-latest: true   
+      - name: setting up .env inputs 
+        run: | 
+          yarn install 
+      - name: deployment in ${{inputs.network}}
+        env:  
+          MNEMONIC: ${{ secrets.TESTNET_MNEMONIC }}
+          API_KEY: ${{ secrets.VERIFY_API_KEY }}
+        run: |
+          npx hardhat run scripts/deploy-script.ts --network ${{inputs.network}}

@@ -1,0 +1,17 @@
+name: productionDeployment
+
+on:
+  release:
+    branches:
+      - master 
+    types: [released]
+
+jobs:
+  production-deployment:
+    uses: ./.github/workflows/deployer.yaml
+    with:
+      username: "MERGER"
+      network: "ftmTestnet"
+    secrets:
+      TESTNET_MNEMONIC: ${{ secrets.TESTNET_MNEMONIC }}
+      VERIFY_API_KEY: ${{ secrets.FTM_TESTNET_API_KEY }}

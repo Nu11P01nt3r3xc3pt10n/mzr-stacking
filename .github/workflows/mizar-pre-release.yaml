@@ -1,0 +1,18 @@
+name: stagingDeployment
+
+on:
+  release:
+    branches:
+      - '**'        # matches every branch
+      - '!master'   # excludes master
+    types: [prereleased]
+    
+jobs:
+  staging-deployment:
+    uses: ./.github/workflows/deployer.yaml
+    with:
+      username: "MERGER"
+      network: "bscTestnet"
+    secrets:
+      TESTNET_MNEMONIC: ${{ secrets.TESTNET_MNEMONIC }}
+      VERIFY_API_KEY: ${{ secrets.BSC_TESTNET_API_KEY }}
