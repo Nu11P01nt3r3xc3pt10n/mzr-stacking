@@ -16,9 +16,7 @@ describe("MZRFarm withdrawal functionalities", () => {
         await this.mzrFarming.initialize(
             this.manager.address,
             this.mzrToken.address,
-            100,
-            Math.trunc(currentDateManipulation({minutes: 60}) / 1000),
-            Math.trunc(currentDateManipulation({days: 60}) / 1000)
+            
         )
         await ethers.provider.send("evm_mine", [])
 

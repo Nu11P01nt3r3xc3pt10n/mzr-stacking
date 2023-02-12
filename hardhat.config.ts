@@ -6,8 +6,6 @@ import "hardhat-deploy"
 import "hardhat-gas-reporter"
 import "hardhat-spdx-license-identifier"
 import { HardhatUserConfig } from 'hardhat/types';
-// import "./tasks"
-
 const accounts = {
   mnemonic: process.env.MNEMONIC || "test test test test test test test test test test test junk",
 }
@@ -30,7 +28,7 @@ const config: HardhatUserConfig = {
     apiKey: {
       bscTestnet:process.env.API_KEY,
       ftmTestnet:process.env.API_KEY,
-      fuji:process.env.API_KEY,
+      // fuji:process.env.API_KEY,
     },        
   },
   networks: {

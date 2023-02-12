@@ -39,68 +39,70 @@ async function main() {
       testUtils.advanceBlock(60)
     }, 100);
   }
-  await mzr.deployTransaction.wait(30)
+  // await mzr.deployTransaction.wait(30)
 
   console.log("mzr deployed to:", mzr.address);
 
   /** 
     * verifying token contract
     */
-  try {
-    await hre.run('verify:verify', {
-      address: mzr.address,
-      bytecode: mzr.bytecode,
-      contract: "contracts/ERC20Mock.sol:ERC20Mock",
-    });
-  } catch (e) {
-    console.log("error with vefication")
-    console.log(e.message)
-  }
+  // try {
+  //   await hre.run('verify:verify', {
+  //     address: mzr.address,
+  //     bytecode: mzr.bytecode,
+  //     contract: "contracts/ERC20Mock.sol:ERC20Mock",
+  //   });
+  // } catch (e) {
+  //   console.log("error with vefication")
+  //   console.log(e.message)
+  // }
 
 
-  const Farming = await ethers.getContractFactory("Farming");
-  const farming = await Farming.deploy();
-  await farming.deployed();
+  const Stacking = await ethers.getContractFactory("Stacking");
+  const stacking = await Stacking.deploy();
+  await stacking.deployed();
 
   /**
     * waiting x amount of time (localhost=10blocks) before triggering verify
     */
-  if (hre.network.name == "localhost") {
-    setInterval(function () {
-      testUtils.advanceBlock(60)
-    }, 100);
-  }
-  await mzr.deployTransaction.wait(30)
+  // if (hre.network.name == "localhost") {
+  //   setInterval(function () {
+  //     testUtils.advanceBlock(60)
+  //   }, 100);
+  // }
+  // await mzr.deployTransaction.wait(30)
 
-  console.log("farming deployed to:", farming.address);
+  console.log("stacking deployed to:", stacking.address);
 
   /** 
     * verifying farming contract
     */
-  try {
-    await hre.run('verify:verify', {
-      address: farming.address,
-      bytecode: farming.bytecode,
-      contract: "contracts/farming.sol:Farming",
-    });
+  // try {
+  //   await hre.run('verify:verify', {
+  //     address: stacking.address,
+  //     bytecode: stacking.bytecode,
+  //     contract: "contracts/stacking.sol:Stacking",
+  //   });
 
-  } catch (e) {
-    console.log("error with vefication")
-    console.log(e.message)
-  }
+  // } catch (e) {
+  //   console.log("error with vefication")
+  //   console.log(e.message)
+  // }
 
 
   /** 
     * initialising farming contract
   */
-  let currentDate = addDays(new Date(), 1)
-  await farming.initialize(
-    address,
-    mzr.address,
-    100,
-    Math.trunc(currentDate.getTime() / 1000),
-    Math.trunc((currentDate.getTime() + (60 * 24 * 60 * 60)) / 1000))
+  // let currentDate = addDays(new Date(), 1)
+  await stacking.initialize(address)
+  console.log("INITIALISED")
+
 }
+    // mzr.address
+    // 100,
+    // Math.trunc(currentDate.getTime() / 1000),
+    // Math.trunc((currentDate.getTime() + (60 * 24 * 60 * 60)) / 1000))
+
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
@@ -110,3 +112,4 @@ main()
     console.error(error);
     process.exit(1);
   });
+module.exports = {};
